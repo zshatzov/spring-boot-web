@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -51,14 +52,21 @@ public class JournalWebSecurityConfigurerAdapter extends WebSecurityConfigurerAd
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
-		http.authorizeRequests()
-			.antMatchers("/", "/webjars/**", "/css/**", "/static/**").permitAll()
+		http.authorizeRequests()			
+			.antMatchers("/*").permitAll()			
 			.antMatchers("/journal/**").authenticated()
 			.and()
-			.formLogin().loginPage("/login").permitAll()
+			.formLogin().loginPage("/login").permitAll()			
 			.usernameParameter("username").passwordParameter("password")
 			.and()
-			.logout().permitAll(); 
+			.logout().permitAll()
+			.invalidateHttpSession(true); 
+	} 
+
+	@Override
+	public void configure(WebSecurity web) throws Exception { 
+		super.configure(web);
+		web.ignoring().antMatchers("/webjars/**");
 	}
 
 	@Autowired
