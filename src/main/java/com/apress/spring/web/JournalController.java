@@ -32,28 +32,17 @@ public class JournalController {
 	public JournalController() {
 	}
 	
-//	@RequestMapping(value ="/", method = RequestMethod.GET)
-//	public String index(HttpSession httpSession){
-//		LOG.info("Return list of all journals");
-//		if(Objects.isNull(httpSession.getAttribute("journals"))){
-//			List<Journal> journals = journalService.findAll().collect(toList());
-//			httpSession.setAttribute("journals", journals);
-//		}
-//		
-//		return "index";
-//	}
-	
-	@RequestMapping(value="/", method=RequestMethod.GET)
+	@RequestMapping(value="/journal", method=RequestMethod.GET)
 	public String index(Model  model){
 		LOG.info("Retrun list of all journals");
 		List<Journal> journals = journalService.findAll().collect(toList());
 		 
 		model.addAttribute("journals", journals);
 		
-		return "index";
+		return "journals";
 	}
 	
-	@RequestMapping(value="/new", method=RequestMethod.GET)
+	@RequestMapping(value="/journal/new", method=RequestMethod.GET)
 	public String newJournal(Model  model){
 		Journal newJournal = new Journal();
 		model.addAttribute("journal", newJournal);
@@ -61,11 +50,11 @@ public class JournalController {
 		return "newJournal";
 	}
 	
-	@RequestMapping(value= "/add", method = RequestMethod.POST)
+	@RequestMapping(value= "/journal/add", method = RequestMethod.POST)
 	public String add(@Valid @ModelAttribute Journal journal, BindingResult bindingResult){
 		LOG.info("Add new journal entry...");
 		if(bindingResult.hasErrors()){
-			return "form";
+			return "newJournal";
 		}
 		
 		Journal savedJournal = journalService.add(journal);
@@ -73,7 +62,7 @@ public class JournalController {
 		
 		publisher.publish(savedJournal);
 		
-		return "redirect:/";
+		return "redirect:/journal";
 	} 	
 	
 	@Inject

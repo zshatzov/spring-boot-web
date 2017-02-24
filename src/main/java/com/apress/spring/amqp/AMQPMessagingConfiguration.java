@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,8 +20,12 @@ public class AMQPMessagingConfiguration {
 	
 	private static final Logger LOG = 
 				LoggerFactory.getLogger(AMQPMessagingConfiguration.class);
+
+	@Value("${journal.publish.queue}")
+	private String queueName;
 	
-	final static String QUEUE_NAME = "spring-boot";
+	@Value("${journal.publish.exchange}")
+	private String exchange;
 	
 	@Autowired
 	private MessageConverter converter;
@@ -31,17 +36,17 @@ public class AMQPMessagingConfiguration {
 	
 	@Bean
 	public Queue queue(){
-		return new Queue(QUEUE_NAME, false);
+		return new Queue(queueName, false);
 	}
 	
 	@Bean
 	public TopicExchange exchange(){
-		return new TopicExchange("spring-boot-exchange", false, false);
+		return new TopicExchange(exchange, false, false);
 	}
 	
 	@Bean
 	public Binding binding(Queue queue, TopicExchange exchange){
-		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
+		return BindingBuilder.bind(queue).to(exchange).with(queueName);
 	}
 	
 	@Bean
@@ -60,7 +65,7 @@ public class AMQPMessagingConfiguration {
 		LOG.info("AMQP connection factory => " + connectionFactory.getHost());
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
-		container.setQueueNames(QUEUE_NAME);
+		container.setQueueNames(queueName);
 		container.setMessageListener(listenerAdapter);
 		return container;
 	}
