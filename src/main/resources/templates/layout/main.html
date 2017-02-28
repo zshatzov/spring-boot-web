@@ -15,7 +15,7 @@
 			<span th:text="#{app.header}">Application header</span>
 		</h1>
 		<p th:if="${param.logout}" class="alert">You have been logged out</p>
-		<p th:if="${param.error}" class="alert alert-error">There was an error, please try again</p>
+		<p th:if="${param.error}" class="alert alert-error">Invalid Username/Password</p>
 		<div sec:authorize="!isAuthenticated()">
 			<form id="login-form" data-th-action="@{/login}" action="#"
 				method="post" role="form" style="display: block;">
@@ -38,7 +38,6 @@
 				</div>
 			</form>
 		</div>
-<!-- 		
 		<div sec:authorize="isAuthenticated()">
 			<form id="logout-form" action="/logout" 
 					data-th-action="@{/logout}" method="post"  
@@ -46,14 +45,13 @@
 				<div class="form-group">
 					<div class="row">
 						<div class="col-sm-6 col-sm-offset-3">
-							<input type="submit" name="logout-submit" id="login-submit"
-								tabindex="4" class="form-control btn btn-login" value="Logout" />
+							<input type="submit" name="logout-submit" id="logout-submit"
+								tabindex="4" class="form-control btn btn-logout" value="Logout" />
 						</div>
 					</div>
 				</div>
 			</form>
 		</div>
--->		
 	</div>
 	<div class="container container-fluid">
 		<div layout:fragment="content">Content goes here!</div>
